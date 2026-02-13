@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Samsung Clone — Home (Video Banners)</title>
+
+  <!-- Tailwind CDN + class-based dark mode -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: "class" };</script>
+
+  <style>
+    /* slider */
+    .slide { transition: opacity 600ms ease, transform 600ms ease; }
+    .slide-hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; inset: 0; }
+    .slide-visible { opacity: 1; transform: translateY(0); pointer-events: auto; position: relative; }
+
+    .hero-video, .banner-video { width:100%; height:100%; object-fit:cover; }
+
+    /* card + reflection */
+    .card-reflection { position: relative; overflow: visible; }
+    .reflection {
+      position: absolute; left: 50%; transform: translateX(-50%) scaleY(-1);
+      bottom: -36px; width: 70%; opacity: 0.12; filter: blur(6px); pointer-events: none;
+      transition: opacity 300ms ease, transform 300ms ease;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0));
+    }
+
+    /* Explore fade bottom-center */
+    .explore-fade {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      opacity: 0;
+      transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+    }
+    .group:hover .explore-fade, .group:focus-within .explore-fade {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
+
+    @media (min-width:768px){ .card-img-size{height:220px;} }
+    @media (max-width:767px){ .card-img-size{height:180px;} #slidesWrapper{height:60vh;} }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900 dark:text-white transition-colors duration-300">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/85 dark:bg-gray-900/85 backdrop-blur border-b dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="asset/images/logo.png" alt="logo" class="w-8 h-8 rounded-sm object-cover" />
+        <span class="font-bold text-lg select-none">Samsung</span>
+      </div>
+
+      <nav class="hidden md:flex gap-6 items-center text-sm">
+        <a href="#mobile" class="hover:text-blue-600">Mobile</a>
+        <a href="#tv" class="hover:text-blue-600">TV & AV</a>
+        <a href="#appliances" class="hover:text-blue-600">Home Appliances</a>
+        <a href="#wearables" class="hover:text-blue-600">Wearables</a>
+        <a href="shop.html" class="hover:text-blue-600 font-medium">Shop</a>
+        <a href="#" class="hover:text-blue-600">Support</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <input class="hidden md:block px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent text-sm" placeholder="Search produk..." />
+        <button id="themeToggle" aria-label="Toggle theme"
+          class="icon-animate p-2 rounded-lg border border-gray-400 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+          🌙
+        </button>
+        <button class="md:hidden p-2">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-4">
+
+    <!-- HERO (video) -->
+    <section id="hero" class="relative w-full">
+      <div class="w-full h-[75vh] md:h-[90vh] relative">
+        <video id="heroVideo" class="hero-video" autoplay muted loop playsinline preload="metadata" poster="asset/images/hero_poster.jpg">
+          <source src="asset/videos/hero.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-black/30 flex items-center">
+          <div class="max-w-4xl px-6 md:px-12 text-white">
+            <h1 class="text-3xl md:text-6xl font-bold leading-tight">Innovation for Every Day</h1>
+            <p class="mt-3 md:text-lg opacity-90">Discover cutting-edge devices across mobile, TV, home, and wearables.</p>
+            <div class="mt-6">
+              <a href="shop.html" class="inline-block px-5 py-3 rounded-full bg-white text-black font-semibold hover:bg-gray-200 transition">Shop All</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: MOBILE (video banner + cards) -->
+    <section id="mobile" class="mt-12">
+      <!-- banner video -->
+      <div class="w-full relative h-[420px] md:h-[480px]">
+        <video class="banner-video w-full h-full object-cover" autoplay muted loop playsinline preload="metadata" poster="asset/images/banner_mobile_poster.jpg">
+          <source src="asset/videos/BannerMobile.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center">
+          <div class="max-w-6xl px-6 md:px-12">
+            <h2 class="text-3xl md:text-5xl font-bold text-white">Mobile</h2>
+            <p class="text-white/90 mt-2">Smartphones & accessories — innovation in your pocket.</p>
+            <div class="mt-4">
+              <a href="shop.html?cat=mobile" class="inline-block px-4 py-2 bg-white text-black rounded-full font-medium">Explore Mobile</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- product cards mobile -->
+      <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Card 1 -->
+          <a href="products/mobile/galaxy-s24-ultra.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl focus:outline-none">
+            <div class="relative">
+              <img src="asset/images/mobile/samsung S24 Ultra.jpeg" alt="S24 Ultra" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/mobile/samsung S24 Ultra.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="hover:hidden font-semibold text-lg">Galaxy S24 Ultra</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">200MP Camera · Titanium Frame</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <!-- Card 2 -->
+          <a href="products/mobile/galaxy-z-fold5.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl focus:outline-none">
+            <div class="relative">
+              <img src="asset/images/mobile/z fold 5.jpeg" alt="Z Fold5" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/mobile/z fold 5.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy Z Fold5</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Foldable · Multitasking</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <!-- Card 3 -->
+          <a href="products/mobile/galaxy-a55.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl focus:outline-none">
+            <div class="relative">
+              <img src="asset/images/mobile/a55 5G.jpeg" alt="A55" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/mobile/a55 5G.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy A55 5G</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Value Performance</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <!-- Card 4 -->
+          <a href="products/mobile/galaxy-buds2-pro.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl focus:outline-none">
+            <div class="relative">
+              <img src="asset/images/mobile/S23Ultra.jpeg" alt="Buds2Pro" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/mobile/S23Ultra.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy S23 Ultra</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Premium Phone</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: TV & AV (video banner + cards) -->
+    <section id="tv" class="mt-8">
+      <div class="w-full relative h-[420px] md:h-[480px]">
+        <video class="banner-video w-full h-full object-cover" autoplay muted loop playsinline preload="metadata" poster="asset/images/banner_tv_poster.jpg">
+          <source src="asset/videos/BannerTV.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center">
+          <div class="max-w-6xl px-6 md:px-12">
+            <h2 class="text-3xl md:text-5xl font-bold text-white">TV & AV</h2>
+            <p class="text-white/90 mt-2">Immersive screens & premium audio.</p>
+            <div class="mt-4">
+              <a href="shop.html?cat=tv" class="inline-block px-4 py-2 bg-white text-black rounded-full font-medium">Explore TV & AV</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a href="products/tv/neo-qled-8k.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/TV_A/neo_qled.webp" alt="Neo QLED" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/TV_A/neo_qled.webp" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Neo QLED</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">8K/4K brilliant display</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/tv/oled-tv.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/TV_A/oled_tv.jpeg" alt="OLED TV" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/TV_A/oled_tv.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">OLED TV</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Perfect blacks & contrast</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/tv/soundbar-q.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/TV_A/soundBar.webp" alt="Soundbar" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/TV_A/soundBar.webp" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Soundbar Q</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Immersive audio</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/tv/the-frame.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/TV_A/the_frame.avif" alt="The Frame" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/TV_A/the_frame.avif" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">The Frame</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Art when off, TV when on</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: HOME APPLIANCES (video banner + cards) -->
+    <section id="appliances" class="mt-8">
+      <div class="w-full relative h-[420px] md:h-[480px]">
+        <video class="banner-video w-full h-full object-cover" autoplay muted loop playsinline preload="metadata" poster="asset/images/banner_appliances_poster.jpg">
+          <source src="asset/videos/BannerAppliences.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center">
+          <div class="max-w-6xl px-6 md:px-12">
+            <h2 class="text-3xl md:text-5xl font-bold text-white">Home Appliances</h2>
+            <p class="text-white/90 mt-2">Bespoke solutions for the home.</p>
+            <div class="mt-4">
+              <a href="shop.html?cat=appliances" class="inline-block px-4 py-2 bg-white text-black rounded-full font-medium">Explore Appliances</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a href="products/appliances/bespoke-fridge.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/homeAppliences/bespoke_fridge.jpeg" alt="Bespoke Fridge" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/homeAppliences/bespoke_fridge.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Bespoke Fridge</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Customize your kitchen</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/appliances/bespoke-washer.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/homeAppliences/bespoke_washer.webp" alt="Washer" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/homeAppliences/bespoke_washer.webp" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Bespoke Washer</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Smart cleaning</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/appliances/airdresser.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/homeAppliences/AirDresser.jpeg" alt="AirDresser" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/homeAppliences/AirDresser.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">AirDresser</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Refresh and sanitize clothes</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/appliances/jetbot.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/homeAppliences/jetbot.jpeg" alt="Jet Bot" class="rounded-lg object-cover w-full card-img-size" />
+            <img src="asset/images/homeAppliences/jetbot.jpeg" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Jet Bot AI+</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Smart cleaning robot</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: WEARABLES (video banner + cards) -->
+    <section id="wearables" class="mt-8">
+      <div class="w-full relative h-[420px] md:h-[480px]">
+        <video class="banner-video w-full h-full object-cover" autoplay muted loop playsinline preload="metadata" poster="asset/images/banner_wearables_poster.jpg">
+          <source src="asset/videos/BannerWearables.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center">
+          <div class="max-w-6xl px-6 md:px-12">
+            <h2 class="text-3xl md:text-5xl font-bold text-white">Wearables</h2>
+            <p class="text-white/90 mt-2">Health, fitness, and everyday companion devices.</p>
+            <div class="mt-4">
+              <a href="shop.html?cat=wearables" class="inline-block px-4 py-2 bg-white text-black rounded-full font-medium">Explore Wearables</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a href="products/wearables/watch6.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/Wearables/Watch6.webp" alt="Watch6" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/Wearables/Watch6.webp" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy Watch6</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Health tracking & AMOLED</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/wearables/buds-fe.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/Wearables/BudsFe.webp" alt="Buds FE" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/Wearables/BudsFe.webp" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy Buds FE</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Everyday comfort</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/wearables/smarttag2.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/Wearables/SmartTag2.avif" alt="SmartTag2" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/Wearables/SmartTag2.avif" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">SmartTag2</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Find what matters</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+
+          <a href="products/wearables/fit3.html" class="group card-reflection block bg-gray-100 dark:bg-gray-800 rounded-xl p-4 relative transition-transform duration-300 hover:-translate-y-3 hover:shadow-2xl">
+            <div class="relative">
+              <img src="asset/images/Wearables/Fit3.avif" alt="Fit3" class="rounded-lg object-cover w-full card-img-size" />
+              <img src="asset/images/Wearables/Fit3.avif" alt="" class="reflection rounded-lg" style="width:60%;" />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="font-semibold text-lg">Galaxy Fit3</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Lightweight fitness band</p>
+            </div>
+            <div class="explore-fade">
+              <span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-100 dark:bg-gray-800 py-12 mt-12">
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-6 text-sm">
+        <div><h5 class="font-bold mb-3">Products</h5><ul class="space-y-1 opacity-80"><li>Phones</li><li>TVs</li><li>Appliances</li></ul></div>
+        <div><h5 class="font-bold mb-3">Support</h5><ul class="space-y-1 opacity-80"><li>FAQ</li><li>Service</li></ul></div>
+        <div><h5 class="font-bold mb-3">Company</h5><ul class="space-y-1 opacity-80"><li>About</li></ul></div>
+        <div><h5 class="font-bold mb-3">Follow</h5><div class="flex gap-3 opacity-80 text-xl">📘 📸 🐦 ▶️</div></div>
+      </div>
+      <p class="text-center text-xs mt-8 opacity-70">© 2024 Samsung Clone UI — for practice only</p>
+    </footer>
+
+  </main>
+
+  <!-- SCRIPTS: darkmode + hero video + simple UX -->
+  <script>
+    /* DARK MODE (auto detect first, persist) */
+    (function(){
+      const html = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      let stored = localStorage.getItem('theme');
+      if (!stored) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        stored = prefersDark ? 'dark' : 'light';
+        localStorage.setItem('theme', stored);
+      }
+      if (stored === 'dark') html.classList.add('dark');
+      const updateIcon = (anim=false) => {
+        themeToggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+        if (anim) {
+          themeToggle.classList.add('scale-110','rotate-180');
+          setTimeout(()=> themeToggle.classList.remove('scale-110','rotate-180'), 300);
+        }
+      };
+      updateIcon(false);
+      themeToggle.addEventListener('click', ()=> {
+        const isDark = html.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateIcon(true);
+      });
+    })();
+
+    /* Small: ensure banner videos play (muted) and pause on small screens */
+    (function(){
+      const videos = document.querySelectorAll('video.banner-video, video#heroVideo');
+      function handleResize(){
+        const small = window.matchMedia('(max-width: 640px)').matches;
+        videos.forEach(v=>{
+          if (small) { try{ v.pause(); v.currentTime = 0; }catch(e){} }
+          else { try{ v.play().catch(()=>{}); }catch(e){} }
+        });
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+    })();
+  </script>
+
+</body>
+</html>

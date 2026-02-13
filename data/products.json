@@ -1,0 +1,165 @@
+[
+  {
+    "id": "galaxy-s24-ultra",
+    "slug": "galaxy-s24-ultra",
+    "name": "Galaxy S24 Ultra",
+    "category": "Mobile",
+    "price": "Rp 18.000.000",
+    "img": "asset/images/mobile/samsung S24 Ultra.jpeg",
+    "url": "products/mobile/galaxy-s24-ultra.html",
+    "short": "Flagship camera phone with 200MP sensor and titanium frame."
+  },
+  {
+    "id": "galaxy-z-fold5",
+    "slug": "galaxy-z-fold5",
+    "name": "Galaxy Z Fold5",
+    "category": "Mobile",
+    "price": "Rp 28.000.000",
+    "img": "asset/images/mobile/z fold 5.jpeg",
+    "url": "products/mobile/galaxy-z-fold5.html",
+    "short": "Foldable device for multitasking and productivity."
+  },
+  {
+    "id": "galaxy-a55",
+    "slug": "galaxy-a55",
+    "name": "Galaxy A55",
+    "category": "Mobile",
+    "price": "Rp 5.000.000",
+    "img": "asset/images/mobile/a55 5G.jpeg",
+    "url": "products/mobile/galaxy-a55.html",
+    "short": "Mid-range solid performer with long battery life."
+  },
+  {
+    "id": "galaxy-s23-ultra",
+    "slug": "galaxy-s23-ultra",
+    "name": "Galaxy S23 Ultra",
+    "category": "Mobile",
+    "price": "Rp 15.000.000",
+    "img": "asset/images/mobile/S23Ultra.jpeg",
+    "url": "products/mobile/galaxy-s23-ultra.html",
+    "short": "Premium flagship phone with S Pen."
+  },
+
+  {
+    "id": "neo-qled",
+    "slug": "neo-qled-8k",
+    "name": "Neo QLED",
+    "category": "TV & AV",
+    "price": "Rp 25.000.000",
+    "img": "asset/images/TV_A/neo_qled.webp",
+    "url": "products/tv/neo-qled-8k.html",
+    "short": "Next-gen mini-LED for stunning brightness and contrast."
+  },
+  {
+    "id": "oled-tv",
+    "slug": "oled-tv",
+    "name": "OLED TV",
+    "category": "TV & AV",
+    "price": "Rp 18.000.000",
+    "img": "asset/images/oled_tv.jpg",
+    "url": "products/tv/oled-tv.html",
+    "short": "OLED with perfect blacks and great contrast."
+  },
+  {
+    "id": "soundbar-q",
+    "slug": "soundbar-q",
+    "name": "Soundbar Q",
+    "category": "TV & AV",
+    "price": "Rp 7.000.000",
+    "img": "asset/images/soundbar.jpg",
+    "url": "products/tv/soundbar-q.html",
+    "short": "Immersive audio for your living room."
+  },
+  {
+    "id": "the-frame",
+    "slug": "the-frame",
+    "name": "The Frame",
+    "category": "TV & AV",
+    "price": "Rp 15.000.000",
+    "img": "asset/images/the_frame.jpg",
+    "url": "products/tv/the-frame.html",
+    "short": "TV that doubles as wall art."
+  },
+
+  {
+    "id": "bespoke-fridge",
+    "slug": "bespoke-fridge",
+    "name": "Bespoke Fridge",
+    "category": "Appliances",
+    "price": "Rp 20.000.000",
+    "img": "asset/images/bespoke_fridge.jpg",
+    "url": "products/appliances/bespoke-fridge.html",
+    "short": "Customizable refrigerator for modern kitchens."
+  },
+  {
+    "id": "bespoke-washer",
+    "slug": "bespoke-washer",
+    "name": "Bespoke Washer",
+    "category": "Appliances",
+    "price": "Rp 12.000.000",
+    "img": "asset/images/bespoke_washer.jpg",
+    "url": "products/appliances/bespoke-washer.html",
+    "short": "Smart washer with efficient cycles."
+  },
+  {
+    "id": "airdresser",
+    "slug": "airdresser",
+    "name": "AirDresser",
+    "category": "Appliances",
+    "price": "Rp 9.000.000",
+    "img": "asset/images/airdresser.jpg",
+    "url": "products/appliances/airdresser.html",
+    "short": "Garment care at home — refresh and sanitize."
+  },
+  {
+    "id": "jetbot",
+    "slug": "jetbot",
+    "name": "Jet Bot AI+",
+    "category": "Appliances",
+    "price": "Rp 9.500.000",
+    "img": "asset/images/jetbot.jpg",
+    "url": "products/appliances/jetbot.html",
+    "short": "Smart robot vacuum with AI navigation."
+  },
+
+  {
+    "id": "watch6",
+    "slug": "watch6",
+    "name": "Galaxy Watch6",
+    "category": "Wearables",
+    "price": "Rp 4.500.000",
+    "img": "asset/images/watch6.jpg",
+    "url": "products/wearables/watch6.html",
+    "short": "Health-forward smartwatch with AMOLED."
+  },
+  {
+    "id": "buds-fe",
+    "slug": "buds-fe",
+    "name": "Galaxy Buds FE",
+    "category": "Wearables",
+    "price": "Rp 1.200.000",
+    "img": "asset/images/buds_fe.jpg",
+    "url": "products/wearables/buds-fe.html",
+    "short": "Everyday comfortable earbuds."
+  },
+  {
+    "id": "smarttag2",
+    "slug": "smarttag2",
+    "name": "SmartTag2",
+    "category": "Wearables",
+    "price": "Rp 350.000",
+    "img": "asset/images/smarttag2.jpg",
+    "url": "products/wearables/smarttag2.html",
+    "short": "Find what matters with tracking tag."
+  },
+  {
+    "id": "fit3",
+    "slug": "fit3",
+    "name": "Galaxy Fit3",
+    "category": "Wearables",
+    "price": "Rp 600.000",
+    "img": "asset/images/fit3.jpg",
+    "url": "products/wearables/fit3.html",
+    "short": "Lightweight fitness band for everyday tracking."
+  }
+]

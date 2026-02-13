@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop — Samsung Clone</title>
+
+  <!-- Tailwind CDN + class-based dark mode -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: "class" };</script>
+
+  <style>
+    /* --- card / reflection --- */
+    .card-reflection { position: relative; overflow: visible; }
+    .reflection {
+      position: absolute; left: 50%; transform: translateX(-50%) scaleY(-1);
+      bottom: -36px; width: 60%; opacity: 0.12; filter: blur(6px); pointer-events: none;
+      transition: opacity 300ms ease, transform 300ms ease;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0));
+    }
+
+    /* --- explore button fade bottom-center --- */
+    .explore-fade {
+      position: absolute; bottom: 18px; left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      opacity: 0; transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+    }
+    .group:hover .explore-fade, .group:focus-within .explore-fade {
+      opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
+    }
+
+    /* card hover lift */
+    .card-hover { transition: transform .28s ease, box-shadow .28s ease; }
+    .card-hover:hover { transform: translateY(-10px); box-shadow: 0 18px 40px rgba(2,6,23,0.12); }
+
+    /* glassmorphism search bar */
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px) saturate(120%); -webkit-backdrop-filter: blur(10px) saturate(120%); border: 1px solid rgba(255,255,255,0.08); }
+    .glass-dark { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+
+    /* dropdown */
+    .dropdown-panel {
+      min-width: 12rem; padding: .35rem; border-radius: .5rem;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 8px 24px rgba(2,6,23,0.12);
+    }
+
+    /* small helpers */
+    img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
+    .card-img-size { height: 220px; object-fit: cover; }
+
+    @media (max-width: 767px) {
+      .card-img-size { height: 180px; }
+      .search-row { gap: .5rem; }
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900 dark:text-white transition-colors duration-300">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="asset/images/logo.png" alt="logo" class="w-8 h-8 rounded" />
+        <a href="index.html" class="font-bold">Samsung</a>
+      </div>
+
+      <!-- small area placeholder so nav looks balanced -->
+      <nav class="hidden md:flex gap-6">
+        <a href="index.html" class="text-sm">Home</a>
+        <a href="index.html#mobile" class="text-sm">Mobile</a>
+        <a href="index.html#tv" class="text-sm">TV & AV</a>
+        <a href="index.html#appliances" class="text-sm">Appliances</a>
+        <a href="index.html#wearables" class="text-sm">Wearables</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" aria-label="Toggle theme" class="p-2 rounded-lg border border-gray-300 dark:border-gray-600">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- GLASS SEARCH + FILTER (full width) -->
+  <section class="w-full bg-transparent">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+      <div class="w-full">
+        <div class="flex items-center justify-between gap-4 search-row">
+          <!-- search (glass full-width) -->
+          <div class="flex-1 relative">
+            <div id="searchContainer" class="glass glass-dark rounded-full p-1 px-2 flex items-center gap-3">
+              <svg class="w-5 h-5 text-gray-300 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-4.35-4.35"/>
+                <circle cx="11" cy="11" r="6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/>
+              </svg>
+              <input id="shopSearch" type="search" placeholder="Cari produk, kategori, atau fitur..." class="flex-1 bg-transparent px-3 py-3 placeholder-gray-300 focus:outline-none text-sm md:text-base" />
+              <button id="clearSearch" title="Bersihkan pencarian" class="opacity-0 transition-opacity duration-200 mr-2">✕</button>
+            </div>
+          </div>
+
+          <!-- custom dropdown (glass) -->
+          <div class="relative">
+            <button id="catBtn" aria-expanded="false" class="glass glass-dark px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base">
+              <span id="catLabel">Semua Kategori</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+
+            <div id="catPanel" class="dropdown-panel absolute right-0 mt-3 hidden z-40">
+              <ul class="flex flex-col gap-1 text-sm">
+                <li><button class="cat-item w-full text-left px-3 py-2 rounded hover:bg-white/6" data-cat="all">Semua Kategori</button></li>
+                <li><button class="cat-item w-full text-left px-3 py-2 rounded hover:bg-white/6" data-cat="Mobile">Mobile</button></li>
+                <li><button class="cat-item w-full text-left px-3 py-2 rounded hover:bg-white/6" data-cat="TV & AV">TV & AV</button></li>
+                <li><button class="cat-item w-full text-left px-3 py-2 rounded hover:bg-white/6" data-cat="Appliances">Appliances</button></li>
+                <li><button class="cat-item w-full text-left px-3 py-2 rounded hover:bg-white/6" data-cat="Wearables">Wearables</button></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- optional sort / extras (small) -->
+          <div class="hidden md:flex items-center gap-3">
+            <button id="resetBtn" class="px-3 py-2 rounded-full glass glass-dark text-sm">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN GRID -->
+  <main class="max-w-7xl mx-auto px-6 pb-16">
+    <h1 class="text-3xl font-bold mb-6">Shop — Semua Produk</h1>
+
+    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <div id="emptyState" class="hidden text-center text-gray-500 mt-8">Tidak ada produk yang cocok.</div>
+    <div id="errorState" class="hidden text-center text-red-500 mt-8">Gagal memuat data produk. Pastikan <code>products.json</code> tersedia.</div>
+  </main>
+
+  <footer class="bg-gray-100 dark:bg-gray-800 py-8 text-sm text-center">
+    © 2024 Samsung Clone UI — for practice only
+  </footer>
+
+  <!-- SCRIPT: load data, render, search+filter, darkmode -->
+  <script>
+    (function () {
+      // ===== Fallback data (agar halaman tidak kosong walau fetch gagal) =====
+      const PRODUCTS_FALLBACK = [
+        {"id":"galaxy-s24-ultra","slug":"galaxy-s24-ultra","name":"Galaxy S24 Ultra","category":"Mobile","price":"Rp 18.000.000","img":"asset/images/mobile/samsung S24 Ultra.jpeg","url":"products/mobile/galaxy-s24-ultra.html","short":"Flagship camera phone with 200MP sensor and titanium frame."},
+        {"id":"galaxy-z-fold5","slug":"galaxy-z-fold5","name":"Galaxy Z Fold5","category":"Mobile","price":"Rp 28.000.000","img":"asset/images/mobile/z fold 5.jpeg","url":"products/mobile/galaxy-z-fold5.html","short":"Foldable device for multitasking and productivity."},
+        {"id":"galaxy-a55","slug":"galaxy-a55","name":"Galaxy A55","category":"Mobile","price":"Rp 5.000.000","img":"asset/images/mobile/a55 5G.jpeg","url":"products/mobile/galaxy-a55.html","short":"Mid-range solid performer with long battery life."},
+        {"id":"galaxy-s23-ultra","slug":"galaxy-s23-ultra","name":"Galaxy S23 Ultra","category":"Mobile","price":"Rp 15.000.000","img":"asset/images/mobile/S23Ultra.jpeg","url":"products/mobile/galaxy-s23-ultra.html","short":"Premium flagship phone with S Pen."},
+
+        {"id":"neo-qled","slug":"neo-qled-8k","name":"Neo QLED","category":"TV & AV","price":"Rp 25.000.000","img":"asset/images/TV_A/neo_qled.webp","url":"products/tv/neo-qled-8k.html","short":"Next-gen mini-LED for stunning brightness and contrast."},
+        {"id":"oled-tv","slug":"oled-tv","name":"OLED TV","category":"TV & AV","price":"Rp 18.000.000","img":"asset/images/TV_A/oled_tv.jpeg","url":"products/tv/oled-tv.html","short":"OLED with perfect blacks and great contrast."},
+        {"id":"soundbar-q","slug":"soundbar-q","name":"Soundbar Q","category":"TV & AV","price":"Rp 7.000.000","img":"asset/images/TV_A/soundbar.webp","url":"products/tv/soundbar-q.html","short":"Immersive audio for your living room."},
+        {"id":"the-frame","slug":"the-frame","name":"The Frame","category":"TV & AV","price":"Rp 15.000.000","img":"asset/images/TV_A/the_frame.avif","url":"products/tv/the-frame.html","short":"TV that doubles as wall art."},
+
+        {"id":"bespoke-fridge","slug":"bespoke-fridge","name":"Bespoke Fridge","category":"Appliances","price":"Rp 20.000.000","img":"asset/images/homeAppliences/bespoke_fridge.jpeg","url":"products/appliances/bespoke-fridge.html","short":"Customizable refrigerator for modern kitchens."},
+        {"id":"bespoke-washer","slug":"bespoke-washer","name":"Bespoke Washer","category":"Appliances","price":"Rp 12.000.000","img":"asset/images/homeAppliences/bespoke_washer.webp","url":"products/appliances/bespoke-washer.html","short":"Smart washer with efficient cycles."},
+        {"id":"airdresser","slug":"airdresser","name":"AirDresser","category":"Appliances","price":"Rp 9.000.000","img":"asset/images/homeAppliences/airdresser.jpeg","url":"products/appliances/airdresser.html","short":"Garment care at home — refresh and sanitize."},
+        {"id":"jetbot","slug":"jetbot","name":"Jet Bot AI+","category":"Appliances","price":"Rp 9.500.000","img":"asset/images/homeAppliences/jetbot.jpeg","url":"products/appliances/jetbot.html","short":"Smart robot vacuum with AI navigation."},
+
+        {"id":"watch6","slug":"watch6","name":"Galaxy Watch6","category":"Wearables","price":"Rp 4.500.000","img":"asset/images/Wearables/Watch6.webp","url":"products/wearables/watch6.html","short":"Health-forward smartwatch with AMOLED."},
+        {"id":"buds-fe","slug":"buds-fe","name":"Galaxy Buds FE","category":"Wearables","price":"Rp 1.200.000","img":"asset/images/Wearables/BudsFe.webp","url":"products/wearables/buds-fe.html","short":"Everyday comfortable earbuds."},
+        {"id":"smarttag2","slug":"smarttag2","name":"SmartTag2","category":"Wearables","price":"Rp 350.000","img":"asset/images/Wearables/SmartTag2.avif","url":"products/wearables/smarttag2.html","short":"Find what matters with tracking tag."},
+        {"id":"fit3","slug":"fit3","name":"Galaxy Fit3","category":"Wearables","price":"Rp 600.000","img":"asset/images/Wearables/Fit3.avif","url":"products/wearables/fit3.html","short":"Lightweight fitness band for everyday tracking."}
+      ];
+
+      // --------- elements ----------
+      const grid = document.getElementById('grid');
+      const emptyState = document.getElementById('emptyState');
+      const errorState = document.getElementById('errorState');
+      const searchInput = document.getElementById('shopSearch');
+      const clearBtn = document.getElementById('clearSearch');
+      const catBtn = document.getElementById('catBtn');
+      const catPanel = document.getElementById('catPanel');
+      const catLabel = document.getElementById('catLabel');
+      const resetBtn = document.getElementById('resetBtn');
+
+      let PRODUCTS = [];
+      let activeCat = 'all';
+      let q = '';
+
+      // ---------- utils ----------
+      function escapeHtml (str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+      }
+      function debounce(fn, wait=200) { let t; return (...a) => { clearTimeout(t); t = setTimeout(()=> fn(...a), wait); }; }
+
+      // ---------- data load (multi-path + fallback) ----------
+      async function loadProducts() {
+        const candidates = ['data/products.json', 'products.json']; // coba 2 lokasi
+        const errors = [];
+        for (const url of candidates) {
+          try {
+            const r = await fetch(url, { cache: 'no-cache' });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const data = await r.json();
+            if (!Array.isArray(data) || !data.length) throw new Error('Empty array');
+            console.log('[products] loaded from', url, 'items:', data.length);
+            PRODUCTS = data;
+            errorState.classList.add('hidden');
+            return;
+          } catch (e) {
+            errors.push(url + ': ' + e.message);
+          }
+        }
+        // Fallback agar UI tetap tampil
+        console.warn('[products] Using FALLBACK.\n' + errors.join('\n'));
+        PRODUCTS = PRODUCTS_FALLBACK.slice();
+        // Tampilkan notice kecil (opsional): biarkan tersembunyi agar UI bersih
+        // errorState.classList.remove('hidden');
+      }
+
+      // ---------- rendering ----------
+      function makeCard(p) {
+        const a = document.createElement('a');
+        a.href = p.url || `product.html?id=${p.id}`;
+        a.className = 'group card-reflection card-hover block bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden p-4 relative transition-all';
+        a.innerHTML = `
+          <div class="text-center mb-3">
+            <h3 class="font-semibold text-lg">${escapeHtml(p.name)}</h3>
+          </div>
+          <div class="relative">
+            <img src="${p.img}" alt="${escapeHtml(p.name)}" class="rounded-lg w-full card-img-size object-cover" loading="lazy" decoding="async" />
+            <img src="${p.img}" alt="" class="reflection rounded-lg" style="width:60%;" aria-hidden="true" />
+          </div>
+          <div class="p-4 text-center mt-2">
+            <p class="text-sm text-gray-600 dark:text-gray-300">${escapeHtml(p.short || p.price || '')}</p>
+            <p class="text-base font-semibold mt-2">${escapeHtml(p.price || '')}</p>
+          </div>
+          <div class="explore-fade"><span class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full font-semibold">Explore →</span></div>
+        `;
+        a.setAttribute('tabindex','0');
+        return a;
+      }
+
+      function renderList(list) {
+        grid.innerHTML = '';
+        if (!list.length) {
+          emptyState.classList.remove('hidden');
+          return;
+        }
+        emptyState.classList.add('hidden');
+        const frag = document.createDocumentFragment();
+        list.forEach(p => frag.appendChild(makeCard(p)));
+        grid.appendChild(frag);
+      }
+
+      // ---------- filtering ----------
+      const CAT_ALIASES = {
+        'mobile': 'Mobile',
+        'tv': 'TV & AV',
+        'tv-av': 'TV & AV',
+        'tv%20%26%20av': 'TV & AV',
+        'appliances': 'Appliances',
+        'wearables': 'Wearables'
+      };
+      function normalizeCategory(cat){ if(!cat) return 'all'; const k=String(cat).toLowerCase(); return CAT_ALIASES[k] || cat; }
+
+      function filterNow() {
+        const qLower = (q || '').toLowerCase();
+        let list = PRODUCTS.slice();
+        if (activeCat && activeCat !== 'all') list = list.filter(p => (p.category || '').toLowerCase() === activeCat.toLowerCase());
+        if (qLower) {
+          list = list.filter(p =>
+            (p.name && p.name.toLowerCase().includes(qLower)) ||
+            (p.short && p.short.toLowerCase().includes(qLower)) ||
+            (p.category && p.category.toLowerCase().includes(qLower)) ||
+            (p.price && p.price.toLowerCase().includes(qLower))
+          );
+        }
+        return list;
+      }
+
+      function applyFilter({ q: qIn = '', cat = 'all' } = {}) {
+        q = (qIn || '').trim();
+        activeCat = cat || 'all';
+        renderList(filterNow());
+
+        const params = new URLSearchParams();
+        if (q) params.set('q', q);
+        if (activeCat && activeCat !== 'all') params.set('cat', activeCat);
+        history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+      }
+
+      // ---------- UI wiring ----------
+      function setupUI() {
+        searchInput.addEventListener('input', debounce((ev) => {
+          const val = ev.target.value.trim();
+          clearBtn.style.opacity = val ? '1' : '0';
+          clearBtn.style.pointerEvents = val ? 'auto' : 'none';
+          clearBtn.innerText = val ? '✕' : '';
+          applyFilter({ q: val, cat: activeCat });
+        }, 180));
+
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          clearBtn.style.opacity = '0';
+          catLabel.innerText = 'Semua Kategori';
+          applyFilter({ q: '', cat: 'all' });
+        });
+
+        // dropdown open/close
+        catBtn.addEventListener('click', () => {
+          const open = catPanel.classList.contains('hidden');
+          catPanel.classList.toggle('hidden', !open);
+          catBtn.setAttribute('aria-expanded', String(open));
+        });
+        // close dropdown when click outside
+        document.addEventListener('click', (e) => {
+          if (!catBtn.contains(e.target) && !catPanel.contains(e.target)) {
+            catPanel.classList.add('hidden'); catBtn.setAttribute('aria-expanded','false');
+          }
+        });
+        // pilih kategori
+        document.querySelectorAll('.cat-item').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const normalized = normalizeCategory(e.currentTarget.dataset.cat);
+            activeCat = normalized === 'all' ? 'all' : normalized;
+            catLabel.innerText = activeCat === 'all' ? 'Semua Kategori' : activeCat;
+            catPanel.classList.add('hidden'); catBtn.setAttribute('aria-expanded','false');
+            applyFilter({ q: searchInput.value.trim(), cat: activeCat });
+          });
+        });
+
+        // reset
+        resetBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          catLabel.innerText = 'Semua Kategori';
+          applyFilter({ q: '', cat: 'all' });
+        });
+
+        // Enter pada input
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') applyFilter({ q: searchInput.value.trim(), cat: activeCat });
+        });
+      }
+
+      // ---------- URL param init ----------
+      function applyFromURLParams() {
+        const params = new URLSearchParams(location.search);
+        const qParam = params.get('q') || '';
+        const catParamRaw = params.get('cat') || 'all';
+        const catParam = normalizeCategory(catParamRaw);
+        if (qParam) searchInput.value = qParam;
+        if (catParam && catParam !== 'all') catLabel.innerText = catParam;
+        activeCat = catParam;
+      }
+
+      // ---------- dark mode toggle ----------
+      (function darkModeSetup(){
+        const html = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        let stored = localStorage.getItem('theme');
+        if(!stored){
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          stored = prefersDark ? 'dark' : 'light';
+          localStorage.setItem('theme', stored);
+        }
+        if(stored === 'dark') html.classList.add('dark');
+        btn.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+        btn.addEventListener('click', ()=> {
+          const isDark = html.classList.toggle('dark');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          btn.textContent = isDark ? '☀️' : '🌙';
+        });
+      })();
+
+      // ---------- init ----------
+      loadProducts().then(() => {
+        // set param URL dulu
+        applyFromURLParams();
+
+        // siapkan UI dan render awal
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setupUI);
+        } else {
+          setupUI();
+        }
+        applyFilter({ q: searchInput.value.trim(), cat: activeCat });
+      });
+
+      // a11y: Enter pada card = buka link
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && document.activeElement && document.activeElement.matches('.card-reflection')) {
+          const href = document.activeElement.getAttribute('href');
+          if (href) location.href = href;
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
